@@ -1,0 +1,5 @@
+google-generativeai
+langchain_core
+pandas
+pymupdf
+streamlit
