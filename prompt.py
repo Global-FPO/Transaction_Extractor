@@ -13,23 +13,24 @@ genai.configure(api_key=GOOGLE_API_KEY)
 
 #model = genai.GenerativeModel('gemini-1.5-pro')
 model = genai.GenerativeModel('gemini-1.5-flash-8b-exp-0827')
+model = genai.GenerativeModel('gemini-1.5-flash-exp-0827')
 #model1 = genai.GenerativeModel('gemini-1.5-flash')
 
 
 
 
-prompt = """
-You are the super intelligence to extract transaction from image\n\n
-  {image}\n\n
-priority - give only all transactions, which always starting from Date Descriptions Amount header otherwise not\n
-headers of list are - Date,Descriptions,Amount.
-Don't give cheque forms transactions and header of text.\n
-if you found empty image then return empty list\n
-give only list of dictionaries don't give code\n
-Don't take total amount and any of header have null value.\n
-Don't give ``` start and end of list.
-"""
-
+#prompt = """
+#You are the super intelligence to extract transaction from image\n\n
+#  {image}\n\n
+#priority - give only all transactions, which always starting from Date Descriptions Amount header otherwise not\n
+#headers of list are - Date,Descriptions,Amount.
+#Don't give cheque forms transactions and header of text.\n
+#if you found empty image then return empty list\n
+#give only list of dictionaries don't give code\n
+#Don't take total amount and any of header have null value.\n
+#Don't give ``` start and end of list.
+#"""
+#
 
 prompt1="""
 You are a highly advanced AI specializing in transaction extraction from images.
@@ -66,19 +67,51 @@ Be precise and exclude any cheque/checks-related content.
 """
 
 
+prompt="""
+You are an advanced AI that extracts transactions from Bank Statement image.
+
+Input_image:
+{image}
+
+Your task is to extract all transactions from above image, transactions always starting from DATE, DESCRIPTION, AMOUNT header very strictly. if you find headers  CREDIT, DEBIT, and BALANCE then include them othrwise exclude it, then ignore them .
+
+Instructions:
+at least these 3 columns should be present in image other wise ignore/give empty list.
+Find and focus only on all transactions that come after above headers, otherwise ignore them.
+include continued transactions.
+Do not include any cheque/check-related transactions.
+Do not include header text, total amounts, or unrelated data.
+If there are no transactions in image, return an empty list.
+Avoid returning null values for any field, try to find a valid value for each.
+Output only a list of dictionaries, without any code formatting.
+"""
+
+import time
+import random
+
 def extr_trans(img):
- 
-  #organ = PIL.Image.open('/content/drive/MyDrive/ocr/Screenshot 2024-09-06 132702.png')
-  
-    # Generate the content in streaming mode
-  response = model.generate_content(
-      [prompt2, img],
-      generation_config=genai.types.GenerationConfig(temperature=0)
-      #stream=True
-  )
-  
-  #print(response.text)
-  return response.text
+    max_retries = 5
+    retry_delay = 5  # initial retry delay in seconds
+    max_retry_delay = 30  # maximum retry delay in seconds
+
+    for attempt in range(max_retries):
+        try:
+            response = model.generate_content(
+                [prompt, img],
+                generation_config=genai.types.GenerationConfig(temperature=0)
+            )
+            return response.text
+        except Exception as e:
+            if e.status_code == 429:  # Resource Exhausted
+                print(f"Received 429 error. Retrying (attempt {attempt+1}/{max_retries})...")
+                retry_delay *= 2  # exponential backoff
+                retry_delay = min(retry_delay, max_retry_delay)
+                time.sleep(retry_delay + random.uniform(0, 1))  # add some randomness to avoid thundering herd
+            else:
+                raise  # re-raise other exceptions
+
+    print("Maximum retries exceeded. Giving up.")
+    return None  # or raise an exception, depending on your requirements
 
     
     

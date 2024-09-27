@@ -88,36 +88,44 @@ if uploaded_file is not None:
      
                 
             
-    
+     
         except Exception as e:
             print(e)
             st.error(f"Error converting PDF: {str(e)}")
             
-            
         else:
+            print(all_text)    
              
             import ast
             ll=[]
             for page,i in enumerate(all_text):
             
-                print(f'--page {page+1}')
-              
-            # i=i.replace('```','"""').strip()
-                try:
-                
+               print(f'--page {page+1}')
+            
+             # i=i.replace('```','"""').strip()
+               try:
+            
                    j= ast.literal_eval(i)
-                except Exception as e:
-                
+               except Exception as e:
+            
                    #print(i)
                    print(e)
                    #print()
+                   #print(type(j))
+                   #print(i)
                    continue
-                 #jj= ast.literal_eval(j)
+               for ii in j:
+                   ll.append(ii)
+                   
+                   
+                   
+               
+            data_lowercase = [{k.title(): v for k, v in item.items()} for item in ll]
                 
-                else:# print(type(j))
-                    for ii in j:
-                       ll.append(ii)
-            df=pd.DataFrame(ll)
+                # Pretty-print the list of dictionaries
+            #pprint.pprint(data_lowercase)   
+                            
+            df=pd.DataFrame(data_lowercase)
             st.subheader('Your Transactions :')
             st.write(df)           
                
