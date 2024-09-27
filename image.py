@@ -1,5 +1,3 @@
-import fitz  # PyMuPDF
-from PIL import Image
 
 import fitz  # PyMuPDF
 from PIL import Image
