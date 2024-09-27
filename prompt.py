@@ -32,22 +32,22 @@ model = genai.GenerativeModel('gemini-1.5-flash-exp-0827')
 #"""
 #
 
-prompt1="""
-You are a highly advanced AI specializing in transaction extraction from images.
-
-{image}
-
-your task is to extract only the valid transactions that starting from the headers: "Date", "Descriptions", and "Amount" otherwise, Don't give." 
-Instructions:
-Focus exclusively on transactions that have a clear header with the fields: Date, Descriptions, and Amount.
-If the image contains no transactions, return an empty list.
-Ensure each transaction is represented as a dictionary.
-Exclude transactions where any of the header fields (Date, Descriptions, or Amount) have missing values.
-Don't give header texts transactions, or total amounts.
-skip cheque(check) forms image for extracting transactions.
-Return only a list of dictionaries, without including any code blocks (e.g., avoid wrapping the list in ```).
-"""
-
+#prompt1="""
+#You are a highly advanced AI specializing in transaction extraction from images.
+#
+#{image}
+#
+#your task is to extract only the valid transactions that starting from the headers: "Date", "Descriptions", and "Amount" otherwise, Don't give." 
+#Instructions:
+#Focus exclusively on transactions that have a clear header with the fields: Date, Descriptions, and Amount.
+#If the image contains no transactions, return an empty list.
+#Ensure each transaction is represented as a dictionary.
+#Exclude transactions where any of the header fields (Date, Descriptions, or Amount) have missing values.
+#Don't give header texts transactions, or total amounts.
+#skip cheque(check) forms image for extracting transactions.
+#Return only a list of dictionaries, without including any code blocks (e.g., avoid wrapping the list in ```).
+#"""
+#
 prompt2="""
 You are a highly advanced AI specializing in transaction extraction from images.
 
