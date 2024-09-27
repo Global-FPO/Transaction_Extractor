@@ -102,13 +102,14 @@ def extr_trans(img):
                 generation_config=genai.types.GenerationConfig(temperature=0)
             )
             return response.text
-        except genai.exceptions.RateLimitExceeded as e:
-            print(f"Rate limit exceeded. Retrying (attempt {attempt+1}/{max_retries})...")
-            retry_delay *= 2  # exponential backoff
-            retry_delay = min(retry_delay, max_retry_delay)
-            time.sleep(retry_delay + random.uniform(0, 1))  # add some randomness to avoid thundering herd
         except Exception as e:
-            raise  # re-raise other exceptions
+            if '429' in str(e):
+                print(f"Rate limit exceeded. Retrying (attempt {attempt+1}/{max_retries})...")
+                retry_delay *= 2  # exponential backoff
+                retry_delay = min(retry_delay, max_retry_delay)
+                time.sleep(retry_delay + random.uniform(0, 1))  # add some randomness to avoid thundering herd
+            else:
+                raise  # re-raise other exceptions
     
     print("Maximum retries exceeded. Giving up.")
     return None  # or raise an exception, depending on your requirements
