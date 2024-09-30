@@ -26,22 +26,22 @@ if uploaded_file is not None:
     with st.spinner('Extracting Transactions....'):
         
 
-        try:
+        
             # Now use convert_from_path with the temp file path                                             
             
-            all_text=[]
-            pdf_document = fitz.open(temp_file_path)
+        all_text=[]
+        pdf_document = fitz.open(temp_file_path)
             
             # Loop through each page
-            for page_num in range(len(pdf_document)):
+        for page_num in range(len(pdf_document)):
                 # Get the page
-                page = pdf_document.load_page(page_num)
+            page = pdf_document.load_page(page_num)
             
                 # Render the page to an image (pixmap)
-                pix = page.get_pixmap()
+            pix = page.get_pixmap()
             
                 # Convert the pixmap to a PIL Image
-                img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
             
                 # Save the image to a file
                 # img_path = f'page_{page_num + 1}.png'
@@ -49,10 +49,10 @@ if uploaded_file is not None:
             
                 # Display the image
                 #img.show()
-                all_text.append(extr_trans(img))
+            all_text.append(extr_trans(img))
             
             # Close the PDF file
-            pdf_document.close()
+        pdf_document.close()
 
                 
             #    time.sleep(30)
@@ -89,45 +89,41 @@ if uploaded_file is not None:
                 
             
      
-        except Exception as e:
-            print(e)
-            st.error(f"Error converting PDF: {str(e)}")
+        
             
-        else:
-            print(all_text)    
-             
-            import ast
-            ll=[]
-            for page,i in enumerate(all_text):
+    
+        import ast
+        ll=[]
+        for page,i in enumerate(all_text):
             
-               print(f'--page {page+1}')
+            print(f'--page {page+1}')
             
              # i=i.replace('```','"""').strip()
-               try:
+            try:
             
-                   j= ast.literal_eval(i)
-               except Exception as e:
+                j= ast.literal_eval(i)
+            except Exception as e:
             
                    #print(i)
-                   print(e)
+                print(e)
                    #print()
                    #print(type(j))
                    #print(i)
-                   continue
-               for ii in j:
-                   ll.append(ii)
+                continue
+            for ii in j:
+                ll.append(ii)
                    
                    
                    
                
-            data_lowercase = [{k.title(): v for k, v in item.items()} for item in ll]
+        data_lowercase = [{k.title(): v for k, v in item.items()} for item in ll]
                 
                 # Pretty-print the list of dictionaries
             #pprint.pprint(data_lowercase)   
                             
-            df=pd.DataFrame(data_lowercase)
-            st.subheader('Your Transactions :')
-            st.write(df)           
+        df=pd.DataFrame(data_lowercase)
+        st.subheader('Your Transactions :')
+        st.write(df)           
                
            
     
