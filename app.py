@@ -100,8 +100,11 @@ if uploaded_file is not None:
             
              # i=i.replace('```','"""').strip()
             try:
+                start=i.find('[')
+                last=i.find(']')
+                text=i[start:last+1]
             
-                j= ast.literal_eval(i)
+                j= ast.literal_eval(text)
             except Exception as e:
             
                    #print(i)
