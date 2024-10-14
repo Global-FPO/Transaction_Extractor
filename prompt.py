@@ -54,7 +54,7 @@ You are an advanced AI that extracts transactions from Bank Statement image.
 Input_image:
 {image}
 
-Your task is to extract all transactions from above image, transactions always starting from DATE, DESCRIPTION, AMOUNT header in table very strictly, some time headers could be along with CREDIT, DEBIT, and BALANCE then include them othrwise exclude it.
+Your task is to extract all transactions from above image, transactions always starting from DATE, DESCRIPTION, AMOUNT header in table of above image very strictly, some time headers could be along with CREDIT, DEBIT, and BALANCE then include them othrwise exclude it.
 
 Instructions:
 at least these 3 columns should be present in image other wise ignore/give empty list.
@@ -65,6 +65,7 @@ Do not include header text, total amounts, or unrelated data.
 If there are no transactions in image, return an empty list.
 Avoid returning null values for any field, try to find a valid value for each.
 Output only a list of dictionaries, without any code formatting.
+key of dictionary must be same as headers
 """
 
 
