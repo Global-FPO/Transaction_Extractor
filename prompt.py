@@ -49,21 +49,22 @@ model = genai.GenerativeModel('gemini-1.5-flash-exp-0827')
 #"""
 #
 prompt2="""
-You are a highly advanced AI specializing in transaction extraction from images.
+You are an advanced AI that extracts transactions from Bank Statement image.
 
+Input_image:
 {image}
 
-Your task is to extract only valid transactions that start with the headers: "Date", "Descriptions", and "Amount". If no valid transactions are found, return an empty list.
+Your task is to extract all transactions from above image, transactions always starting from DATE, DESCRIPTION, AMOUNT header in table very strictly, some time headers could be along with CREDIT, DEBIT, and BALANCE then include them othrwise exclude it.
 
 Instructions:
-Focus exclusively on transactions that follow the headers: Date, Descriptions, and Amount.
-**Do not extract transactions related to cheques/checks** (ignore cheque/check form images entirely).
-Skip transactions where any of the fields (Date, Descriptions, or Amount) have missing or null values.
-Ignore header texts, total amounts, and any non-transactional data.
-If the image contains no valid transactions, return an empty list.
-Return only a list of dictionaries for valid transactions not code, and avoid wrapping ``` the output list.
-
-Be precise and exclude any cheque/checks-related content.
+at least these 3 columns should be present in image other wise ignore/give empty list.
+Find and focus only on all transactions that come after above headers, otherwise ignore them.
+include continued transactions.
+Do not include any cheque/check-related transactions.
+Do not include header text, total amounts, or unrelated data.
+If there are no transactions in image, return an empty list.
+Avoid returning null values for any field, try to find a valid value for each.
+Output only a list of dictionaries, without any code formatting.
 """
 
 
@@ -98,7 +99,7 @@ def extr_trans(img):
         try:
             # Make your API request here
             response = model.generate_content(
-                [prompt, img],
+                [prompt2, img],
                 generation_config=genai.types.GenerationConfig(temperature=0)
             )
             return response.text
